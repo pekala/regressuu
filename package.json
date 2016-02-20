@@ -4,6 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+    "clean": "rm -rf _screenshots tests.json",
+    "distclean": "rm -rf node_modules",
     "casper-webkit": "casperjs --engine=phantomjs --renderer=webkit index.js",
     "casper-gecko": "casperjs --engine=slimerjs --renderer=gecko index.js"
   },
@@ -11,7 +13,7 @@
   "license": "ISC",
   "devDependencies": {
     "eslint": "2.2.0",
-    "eslint-plugin-react": "4.0.0",
+    "eslint-plugin-react": "4.0.0"
   },
   "dependencies": {
     "chalk": "1.1.1",
