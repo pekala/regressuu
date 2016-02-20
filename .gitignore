@@ -1,0 +1,4 @@
+node_modules
+tests.json
+_screenshots
+npm-debug.log*
