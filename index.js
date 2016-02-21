@@ -1,19 +1,42 @@
-const tests = require('./tests.json');
-const casper = require('casper').create({
-    verbose: true,
-    logLevel: 'debug',
-});
+/* eslint-env node */
+const path = require('path');
+const express = require('express');
+const mkdirp = require('mkdirp');
+const webpack = require('webpack');
+const WebpackOnBuildPlugin = require('on-build-webpack');
+const logger = require('./logger');
+const webpackConfig = require('./webpack.config');
+const createComponentTreeJSON = require('./createComponentTreeJSON');
+const grabScreenshots = require('./grabScreenshots');
+const processScreenshots = require('./processScreenshots');
+const port = 1358;
 
-const host = 'http://localhost:1358/';
-casper.start(host, function() {
-    tests.forEach(function(test) {
-        test.fixtures.forEach(function(fixture) {
-            casper.thenOpen(host + '?component=' + test.name + '&fixture=' + fixture +'&fullScreen=true', function () {
-                const fileName = [test.name, fixture, casper.cli.get('renderer'), 'png'].join('.');
-                this.captureSelector('_screenshots/' + fileName, '[class^="component-playground__preview"] > *');
+webpackConfig.plugins = [
+    new WebpackOnBuildPlugin(function() {
+        mkdirp.sync('_screenshots');
+        createComponentTreeJSON()
+            .then(grabScreenshots)
+            .then(processScreenshots)
+            .then(() => process.exit())
+            .catch(error => {
+                console.log(error);
+                process.exit(1);
             });
-        });
-    });
+    }),
+];
+
+const compiler = webpack(webpackConfig);
+const app = express();
+
+app.use(require('webpack-dev-middleware')(compiler, { noInfo: true }));
+
+app.get('/', function(req, res) {
+    res.sendFile(path.join(__dirname, 'index.html'));
 });
 
-casper.run();
+app.listen(port, 'localhost', function(serverError) {
+    if (serverError) {
+        logger.log(serverError);
+        return;
+    }
+});

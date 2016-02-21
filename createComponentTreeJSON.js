@@ -1,4 +1,3 @@
-const fs = require('fs');
 const path = require('path');
 const webpack = require('webpack');
 const MemoryFS = require('memory-fs');
@@ -18,8 +17,7 @@ module.exports = function() {
                 name: componentName,
                 fixtures: Object.keys(componentTree[componentName].fixtures),
             }));
-            fs.writeFileSync(path.resolve(__dirname, './tests.json'), JSON.stringify(componentsData));
-            resolve();
+            resolve(componentsData);
         });
     });
 };

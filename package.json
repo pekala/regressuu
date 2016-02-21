@@ -1,23 +1,23 @@
 {
   "name": "regressuu2",
   "version": "1.0.0",
-  "description": "",
+  "description": "Visual regression tests for React components",
   "main": "index.js",
   "scripts": {
     "clean": "rm -rf _screenshots tests.json",
     "distclean": "rm -rf node_modules",
-    "casper-webkit": "casperjs --engine=phantomjs --renderer=webkit index.js",
-    "casper-gecko": "casperjs --engine=slimerjs --renderer=gecko index.js"
+    "casper-webkit": "casperjs --engine=phantomjs --renderer=webkit casper.js",
+    "casper-gecko": "casperjs --engine=slimerjs --renderer=gecko casper.js"
   },
-  "author": "",
+  "author": "Maciej Pekala",
   "license": "ISC",
   "devDependencies": {
     "eslint": "2.2.0",
     "eslint-plugin-react": "4.0.0"
   },
   "dependencies": {
-    "chalk": "1.1.1",
     "casperjs": "1.1.0-beta5",
+    "chalk": "1.1.1",
     "express": "4.13.4",
     "mkdirp": "0.5.1",
     "on-build-webpack": "0.1.0",
@@ -27,6 +27,8 @@
     "react-querystring-router": "0.3.0",
     "require-from-string": "1.1.0",
     "resemblejs": "2.1.0",
+    "webdrivercss": "^1.1.10",
+    "webdriverio": "^2.0.0",
     "webpack": "1.12.13",
     "webpack-dev-middleware": "1.5.1"
   }
