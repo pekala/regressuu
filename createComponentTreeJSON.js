@@ -13,10 +13,17 @@ module.exports = function() {
             const filePath = path.join(webpackConfigTree.output.path, webpackConfigTree.output.filename);
             const fileContent = memfs.readFileSync(filePath).toString();
             const componentTree = requireFromString(fileContent);
-            const componentsData = Object.keys(componentTree).map(componentName => ({
-                name: componentName,
-                fixtures: Object.keys(componentTree[componentName].fixtures),
-            }));
+            const componentsData = Object.keys(componentTree).map(componentName => {
+                const fixtures = componentTree[componentName].fixtures;
+                const fixtureData = Object.keys(fixtures).map(fixtureName => ({
+                    name: fixtureName,
+                    path: fixtures[fixtureName].path,
+                }));
+                return {
+                    name: componentName,
+                    fixtures: fixtureData,
+                };
+            });
             resolve(componentsData);
         });
     });

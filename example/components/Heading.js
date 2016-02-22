@@ -3,7 +3,7 @@ const React = require('react');
 module.exports = function(props) {
     const style = {
         fontSize: '2em',
-        fontFace: 'Helvetica',
+        fontFamily: 'Comic Sans',
         textDecoration: props.underline ? 'underline' : 'none',
     };
 

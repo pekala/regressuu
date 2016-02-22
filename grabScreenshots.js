@@ -1,4 +1,6 @@
-const fs = require('fs');
+'use strict';
+
+const fs = require('fs-extra');
 const path = require('path');
 const webdriverio = require('webdriverio');
 const webdrivercss = require('webdrivercss');
@@ -10,8 +12,7 @@ const failedComparisonsRoot = '_screenshots/_diffs';
 
 module.exports = function (tests) {
     const promises = [];
-    const filesToRemove = [];
-    const browsers = ['phantomjs'].map(browserName => {
+    const browsers = ['phantomjs', 'chrome'].map(browserName => {
         const browser = {
             name: browserName,
             driver: webdriverio.remote({
@@ -31,25 +32,44 @@ module.exports = function (tests) {
 
     tests.forEach(function(test) {
         test.fixtures.forEach(function(fixture) {
-            const fixtureUrl = `http://localhost:1358?component=${test.name}&fixture=${fixture}&fullScreen=true`;
-            const id = [test.name, fixture].join('.');
+            const fixtureUrl = `http://localhost:1358?component=${test.name}&fixture=${fixture.name}&fullScreen=true`;
+            const id = [test.name, fixture.name].join('.');
             const elementSelector = '[class^="component-playground__preview"] > *';
-            filesToRemove.push(id + '.png');
 
             browsers.forEach(browser => {
+                let isNew = false;
+                const baselineImageName = [fixture.name, browser.name, 'png'].join('.');
+                const baselineImagePath = path.resolve(__dirname, './example/fixtures', path.dirname(fixture.path), baselineImageName);
+                const tempBaselineImageName = [test.name, fixture.name, browser.name, 'baseline.png'].join('.');
+                try {
+                    fs.copySync(baselineImagePath, path.resolve(__dirname, screenshotRoot, tempBaselineImageName));
+                } catch (e) {
+                    isNew = true;
+                }
+
+
                 const promise = new Promise((resolve, reject) => {
                     browser.driver
                     .url(fixtureUrl)
                     .webdrivercss(id, {
                         name: browser.name,
                         elem: elementSelector,
-                    }, (err, res) => {
+                    }, (err, result) => {
                         if (err) {
                             reject(err);
                             return;
                         }
                         logger.log(`${id} screenshot taken for ${browser.name}`);
-                        resolve(res);
+                        if (isNew) {
+                            fs.renameSync(result[browser.name][0].baselinePath, baselineImagePath);
+                        }
+                        resolve(Object.assign(result[browser.name][0], {
+                            browserName: browser.name,
+                            fixture: fixture,
+                            componentName: test.name,
+                            baselineImagePath: baselineImagePath,
+                            baselineImageName: baselineImageName,
+                        }));
                     });
                 });
                 promises.push(promise);
@@ -61,12 +81,6 @@ module.exports = function (tests) {
         browsers.forEach(browser => {
             browser.driver.end();
         });
-        filesToRemove.forEach(fileName => {
-            fs.unlinkSync(path.resolve(__dirname, screenshotRoot, fileName));
-        });
-        return results.map(result => {
-            const browserName = Object.keys(result)[0];
-            return Object.assign(result[browserName][0], { browserName: browserName });
-        });
+        return results;
     });
 };

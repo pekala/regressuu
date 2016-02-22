@@ -2,12 +2,13 @@
 const path = require('path');
 
 module.exports = {
-    entry: [
-        path.resolve(__dirname, './playground'),
-    ],
+    entry: {
+        playground: [ path.resolve(__dirname, './playground') ],
+        diff: [ path.resolve(__dirname, './diffApp') ],
+    },
     output: {
         path: __dirname,
-        filename: 'bundle.js',
+        filename: 'bundle-[name].js',
     },
     resolve: {
         alias: {
@@ -15,5 +16,19 @@ module.exports = {
             COSMOS_FIXTURES: path.resolve(__dirname, './example/fixtures'),
             GET_FIXTURE_TREE: path.resolve(__dirname, './example/get-component-fixture-tree'),
         },
+    },
+    module: {
+        noParse: /ui-components-bottom/,
+        loaders: [
+            {
+                test: /\.js$/,
+                loader: 'babel',
+                query: {
+                    cacheDirectory: true,
+                },
+                exclude: /(node_modules|vendors)/,
+                include: __dirname,
+            },
+        ],
     },
 };

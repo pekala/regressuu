@@ -1,2 +1,3 @@
 const getComponentFixtureTree = require('GET_FIXTURE_TREE');
-module.exports = getComponentFixtureTree();
+const WITH_PATHS = true;
+module.exports = getComponentFixtureTree(WITH_PATHS);

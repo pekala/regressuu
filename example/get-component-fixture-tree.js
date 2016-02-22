@@ -1,4 +1,4 @@
-module.exports = function() {
+module.exports = function(withPaths) {
     var requireComponent = require.context('COSMOS_COMPONENTS', true);
     var isComponent = /^\.\/(.+)\.jsx?$/;
     var components = {};
@@ -13,21 +13,25 @@ module.exports = function() {
         var componentName = match[1];
         components[componentName] = {
             class: requireComponent(componentPath),
-            fixtures: getFixturesForComponent(componentName),
+            fixtures: getFixturesForComponent(componentName, withPaths),
         };
     });
     return components;
 };
 
-var getFixturesForComponent = function(componentName) {
-    var requireFixture = require.context('COSMOS_FIXTURES', true),
+var getFixturesForComponent = function(componentName, withPaths) {
+    var requireFixture = require.context('COSMOS_FIXTURES', true, /.js$/),
         isFixtureOfComponent = new RegExp('./' + componentName + '/([^/]+).js$'),
         fixtures = {};
 
     requireFixture.keys().forEach(function(fixturePath) {
         var match = fixturePath.match(isFixtureOfComponent);
         if (match) {
-            fixtures[match[1]] = requireFixture(fixturePath);
+            const props = requireFixture(fixturePath);
+            fixtures[match[1]] = !withPaths ? props : {
+                props: props,
+                path: fixturePath,
+            };
         }
     });
 

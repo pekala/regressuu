@@ -2,9 +2,9 @@ const React = require('react');
 
 module.exports = function(props) {
     const style = {
-        borderRadius: props.isRounded ? 20 : 0,
+        borderRadius: props.isRounded ? 10 : 0,
         backgroundColor: 'blue',
-        color: 'white',
+        color: 'red',
         padding: 10,
     };
 
