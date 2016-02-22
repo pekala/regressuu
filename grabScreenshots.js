@@ -6,14 +6,15 @@ const path = require('path');
 const webdriverio = require('webdriverio');
 const webdrivercss = require('webdrivercss');
 
+const config = require('./config');
 const logger = require('./logger');
 
 const screenshotRoot = '_screenshots';
 const failedComparisonsRoot = '_screenshots/_diffs';
 
-module.exports = function (tests) {
+module.exports = tests => {
     const promises = [];
-    const browsers = ['phantomjs', 'chrome'].map(browserName => {
+    const browsers = config.BROWSERS.map(browserName => {
         const browser = {
             name: browserName,
             driver: webdriverio.remote({
@@ -25,14 +26,14 @@ module.exports = function (tests) {
         webdrivercss.init(browser.driver, {
             screenshotRoot: screenshotRoot,
             failedComparisonsRoot: failedComparisonsRoot,
-            misMatchTolerance: 0.05,
+            misMatchTolerance: config.TOLERANCE,
         });
         return browser;
     });
 
 
-    tests.forEach(function(test) {
-        test.fixtures.forEach(function(fixture) {
+    tests.forEach(test => {
+        test.fixtures.forEach(fixture => {
             const fixtureUrl = `http://localhost:1358?component=${test.name}&fixture=${fixture.name}&fullScreen=true`;
             const id = [test.name, fixture.name].join('.');
             const elementSelector = '[class^="component-playground__preview"] > *';

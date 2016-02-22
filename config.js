@@ -7,6 +7,8 @@ const DEFAULT_CONFIG = {
     COSMOS_FIXTURES: path.resolve(__dirname, './example/fixtures'),
     GET_FIXTURE_TREE: path.resolve(__dirname, './example/get-component-fixture-tree'),
     SERVER_PORT: 1358,
+    TOLERANCE: 0.05,
+    BROWSERS: ['phantomjs', 'chrome'],
 };
 
 module.exports = DEFAULT_CONFIG;

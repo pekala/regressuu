@@ -5,7 +5,7 @@ const ejs = require('ejs');
 const express = require('express');
 
 const selenium = require('./seleniumUtils');
-const createComponentTreeJSON = require('./createComponentTreeJSON');
+const getFixtures = require('./getFixtures');
 const grabScreenshots = require('./grabScreenshots');
 const startServer = require('./startServer');
 const processScreenshots = require('./processScreenshots');
@@ -20,7 +20,7 @@ Promise.resolve()
     .then(selenium.install)
     .then(selenium.start)
     .then(startServer(app))
-    .then(createComponentTreeJSON)
+    .then(getFixtures)
     .then(grabScreenshots)
     .then(processScreenshots(app))
     .then(selenium.kill)

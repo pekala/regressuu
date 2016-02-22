@@ -12,7 +12,7 @@ module.exports = function() {
     const compiler = webpack(webpackConfigTree);
     compiler.outputFileSystem = memfs;
     return new Promise(resolve => {
-        compiler.run(function () {
+        compiler.run(() => {
             const filePath = path.join(webpackConfigTree.output.path, webpackConfigTree.output.filename);
             const fileContent = memfs.readFileSync(filePath).toString();
             const componentTree = requireFromString(fileContent);
