@@ -1,24 +1,28 @@
 /* eslint-env node */
-const path = require('path');
+'use strict';
 
-module.exports = {
+const path = require('path');
+const config = require('./config');
+
+const aliases = {
+    COSMOS_COMPONENTS: config.COSMOS_COMPONENTS,
+    COSMOS_FIXTURES: config.COSMOS_FIXTURES,
+    GET_FIXTURE_TREE: config.GET_FIXTURE_TREE,
+};
+
+module.exports.main = {
     entry: {
-        playground: [ path.resolve(__dirname, './playground') ],
-        diff: [ path.resolve(__dirname, './diffApp') ],
+        playground: [ path.resolve(__dirname, './componentsApp/index') ],
+        diff: [ path.resolve(__dirname, './diffApp/app') ],
     },
     output: {
         path: __dirname,
         filename: 'bundle-[name].js',
     },
     resolve: {
-        alias: {
-            COSMOS_COMPONENTS: path.resolve(__dirname, './example/components'),
-            COSMOS_FIXTURES: path.resolve(__dirname, './example/fixtures'),
-            GET_FIXTURE_TREE: path.resolve(__dirname, './example/get-component-fixture-tree'),
-        },
+        alias: aliases,
     },
     module: {
-        noParse: /ui-components-bottom/,
         loaders: [
             {
                 test: /\.js$/,
@@ -26,9 +30,24 @@ module.exports = {
                 query: {
                     cacheDirectory: true,
                 },
-                exclude: /(node_modules|vendors)/,
+                exclude: /(node_modules)/,
                 include: __dirname,
             },
         ],
     },
 };
+
+module.exports.componentTree = {
+    entry: [
+        path.resolve(__dirname, './componentsApp/componentFixtureTree'),
+    ],
+    output: {
+        path: __dirname,
+        filename: 'component.tree.bundled.js',
+        libraryTarget: 'commonjs2',
+    },
+    resolve: {
+        alias: aliases,
+    },
+};
+

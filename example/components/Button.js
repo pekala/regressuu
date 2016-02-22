@@ -4,7 +4,7 @@ module.exports = function(props) {
     const style = {
         borderRadius: props.isRounded ? 10 : 0,
         backgroundColor: 'blue',
-        color: 'red',
+        color: 'green',
         padding: 10,
     };
 

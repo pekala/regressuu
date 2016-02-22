@@ -1,8 +1,11 @@
+/* eslint-env node */
+'use strict';
+
 const path = require('path');
 const webpack = require('webpack');
 const MemoryFS = require('memory-fs');
 const requireFromString = require('require-from-string');
-const webpackConfigTree = require('./webpack.config.tree');
+const webpackConfigTree = require('./webpack.config').componentTree;
 
 module.exports = function() {
     const memfs = new MemoryFS();

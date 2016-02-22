@@ -1,3 +1,6 @@
+/* eslint-env node */
+'use strict';
+
 const chalk = require('chalk');
 
 const log = (message, id) => {

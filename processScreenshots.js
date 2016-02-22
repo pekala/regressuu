@@ -1,3 +1,6 @@
+/* eslint-env node */
+'use strict';
+
 const open = require('open');
 const logger = require('./logger');
 const updateBaseline = require('./updateBaseline');
@@ -22,8 +25,9 @@ module.exports = app => screenshots => {
             resolve();
         } else {
             app.get('/diff', function(req, res) {
-                res.render('diff', { screenshots: failedScreenshots });
+                res.render('diffApp/index', { screenshots: failedScreenshots });
             });
+
             app.post('/accept', function(req, res) {
                 updateBaseline(failedScreenshots).then(() => {
                     res.end('A OK!');
