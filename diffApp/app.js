@@ -43,13 +43,19 @@ const ScreenshotDiffs = React.createClass({
     render: function() {
         return (
             <div className="ScreenshotDiffs">
-                {this.props.screenshots.length === 1
-                    ? <h1>There is one potential regression</h1>
-                    : <h1>There are {this.props.screenshots.length} potential regressions</h1>
-                }
-                <p>Inspect the changes and if everything looks as expected,
-                you can <button onClick={this.props.acceptChanges}>Accept all changes</button>.</p>
-                <p>Otherwise, fix the regressions and rerun the tests.</p>
+                <div className="ScreenshotDiffs--header">
+                    <div>
+                        {this.props.screenshots.length === 1
+                            ? <h1>There is one potential regression</h1>
+                            : <h1>There are {this.props.screenshots.length} potential regressions</h1>
+                        }
+                        <p>Inspect the changes and if everything looks as expected,
+                        you can accept all changes.</p>
+                        <p>Otherwise, fix the regressions and rerun the tests.</p>
+                    </div>
+                    <button className="ScreenshotDiffs--button" onClick={this.props.acceptChanges}>We good</button>
+                    <img src="diffapp/canttell.jpg" className="ScreenshotDiffs--meme" />
+                </div>
 
                 {this.props.screenshots.map(screenshot =>
                     <ScreenshotDiff  key={screenshot.baselineImagePath} {...screenshot} />
@@ -82,7 +88,7 @@ const App = React.createClass({
                 {this.state.isProcessing
                     ? <span>Processing...</span>
                     : this.state.hasSucceeded
-                        ? <span>Success!</span>
+                        ? <div className="App--success">You nailed it!</div>
                         : <ScreenshotDiffs
                             screenshots={this.props.screenshots}
                             acceptChanges={this.acceptChanges}
