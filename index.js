@@ -9,6 +9,7 @@ const getFixtures = require('./getFixtures');
 const grabScreenshots = require('./grabScreenshots');
 const startServer = require('./startServer');
 const processScreenshots = require('./processScreenshots');
+const getConfig = require('./config');
 
 const app = express();
 app.set('view engine', 'html');
@@ -16,16 +17,18 @@ app.engine('html', ejs.renderFile);
 app.set('views', './');
 app.use(express.static('./'));
 
-Promise.resolve()
-    .then(selenium.install)
-    .then(selenium.start)
-    .then(startServer(app))
-    .then(getFixtures)
-    .then(grabScreenshots)
-    .then(processScreenshots(app))
-    .then(selenium.kill)
-    .then(() => process.exit())
-    .catch(error => {
-        console.log(error);
-        process.exit(1);
-    });
+getConfig().then(config => {
+    Promise.resolve()
+        .then(selenium.install)
+        .then(selenium.start)
+        .then(startServer(app, config))
+        .then(getFixtures(config))
+        .then(grabScreenshots(config))
+        .then(processScreenshots(app, config))
+        .then(selenium.kill)
+        .then(() => process.exit())
+        .catch(error => {
+            console.log(error);
+            process.exit(1);
+        });
+});

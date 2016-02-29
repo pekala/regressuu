@@ -5,7 +5,7 @@ const open = require('open');
 const logger = require('./logger');
 const updateBaseline = require('./updateBaseline');
 
-module.exports = app => screenshots => {
+module.exports = (app, config) => screenshots => {
     screenshots.forEach(screenshot => {
         if (screenshot.message.indexOf('first image') > -1) {
             logger.star(`${screenshot.componentName}/${screenshot.fixture.name} added as a baseline for ${screenshot.browserName}`);
@@ -35,7 +35,7 @@ module.exports = app => screenshots => {
                 }).catch(error => reject(error));
             });
 
-            open('http://localhost:1358/diff');
+            open(`http://localhost:${config.SERVER_PORT}/diff`);
         }
     });
 };

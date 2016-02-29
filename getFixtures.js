@@ -7,8 +7,15 @@ const MemoryFS = require('memory-fs');
 const requireFromString = require('require-from-string');
 const webpackConfigTree = require('./webpack.config').componentTree;
 
-module.exports = function() {
+module.exports = config => () => {
     const memfs = new MemoryFS();
+    webpackConfigTree.resolve = {
+        alias: {
+            COSMOS_COMPONENTS: config.COSMOS_COMPONENTS,
+            COSMOS_FIXTURES: config.COSMOS_FIXTURES,
+            GET_FIXTURE_TREE: config.GET_FIXTURE_TREE,
+        },
+    };
     const compiler = webpack(webpackConfigTree);
     compiler.outputFileSystem = memfs;
     return new Promise(resolve => {

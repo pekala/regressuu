@@ -6,13 +6,12 @@ const path = require('path');
 const webdriverio = require('webdriverio');
 const webdrivercss = require('webdrivercss');
 
-const config = require('./config');
 const logger = require('./logger');
 
 const screenshotRoot = '_screenshots';
 const failedComparisonsRoot = '_screenshots/_diffs';
 
-module.exports = tests => {
+module.exports = config => tests => {
     const promises = [];
     const browsers = config.BROWSERS.map(browserName => {
         const browser = {
